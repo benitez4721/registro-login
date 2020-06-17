@@ -2,6 +2,7 @@ const express = require('express');
 const db = require('../server/db')
 const {check, validationResult} = require('express-validator')
 const queries = require('../queries/queries')
+const jwt = require('jsonwebtoken')
 
 
 const app = express()
@@ -61,12 +62,33 @@ app.post('/login', (req, res) => {
                 })
             }
 
-            return res.json({
-                ok: true,
-                mensaje: `Usuario ${req.body.email} loggeado`
+            let getUsuarioDB = `SELECT email FROM usuarios WHERE password = AES_ENCRYPT(${req.body.password},'secret') and email = '${req.body.email}' `
+            db.query(getUsuarioDB, (err,result,fields) => {
+                if(err){
+                
+                    return res.status(400).json({
+                        ok: true,
+                        err
+                    })
+                }
+
+                if(result < 1){
+                    return res.json({
+                        ok: false,
+                        mensaje: "Ocurrio algo inserperado"
+                    })
+                }
+                let token = jwt.sign({
+                    usuario: result 
+                }, 'secret', {expiresIn: '1hr'})
+    
+                return res.json({
+                    ok: true,
+                    mensaje: result,
+                    token
+                })
             })
             
-
         })
         
         
