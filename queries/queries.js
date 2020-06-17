@@ -1,5 +1,6 @@
 
 const db = require('../server/db')
+const jwt = require('jsonwebtoken')
 
 function crearTablas(){
     let sql = 'CREATE TABLE IF NOT EXISTS usuarios (id INT PRIMARY KEY,email VARCHAR(255) UNIQUE, password VARCHAR(255))'
@@ -57,25 +58,40 @@ function crearUsuario(body, res){
    
 }
 
-function verificarCorreo(correo) {
-    let sqlEmail = `SELECT email FROM usuarios WHERE email = '${correo}'`
-    db.query(sqlEmail, (err, result,fields) => {
-        if(err) {
-            
-            return false            
+async function getUsusarioLogin(req,res) {
+    let getUsuarioDB = `SELECT email FROM usuarios WHERE password = AES_ENCRYPT(${req.body.password},'secret') and email = '${req.body.email}' `
+    db.query(getUsuarioDB, (err,result,fields) => {
+        if(err){
+        
+            return res.status(400).json({
+                ok: true,
+                err
+            })
         }
 
-        if(result.length > 0){
-            return true
+        if(result < 1){
+            return res.json({
+                ok: false,
+                mensaje: "Ocurrio algo inserperado"
+            })
         }
-        console.log("aqui");
-        return false
-    })
+        let token = jwt.sign({
+            usuario: result 
+        }, 'secret', {expiresIn: '1hr'})
+
+        return res.json({
+            ok: true,
+            usuario: result,
+            token
+        })
+    }) 
+     
 }
+
 
 
 module.exports = {
     crearTablas,
     crearUsuario,
-    verificarCorreo,
+    getUsusarioLogin
 }

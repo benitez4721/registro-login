@@ -2,7 +2,7 @@ const express = require('express');
 const db = require('../server/db')
 const {check, validationResult} = require('express-validator')
 const queries = require('../queries/queries')
-const jwt = require('jsonwebtoken')
+const {verificarCorreoLogin, verificarContrasenaLogin} = require('../middlewares/middlewares');
 
 
 const app = express()
@@ -27,72 +27,11 @@ app.post('/registro',[
     
 })
 
-app.post('/login', (req, res) => {
-    let sqlEmail = `SELECT email FROM usuarios WHERE email = '${req.body.email}'`
-    db.query(sqlEmail, (err, result,fields) => {
-        if(err) {
-            
-            return res.status(400).json({
-                ok: false,
-                err
-            })           
-        }
-
-        if(result.length < 1){
-            return res.json({
-                ok: false,
-                mensaje: "El (correo) o la contrasena no es valido"
-            })
-        }
-
-        let sqlPassword = `SELECT password FROM usuarios WHERE password = AES_ENCRYPT(${req.body.password},'secret')`
-        db.query(sqlPassword, (err,result,fields) => {
-            if(err){
-                
-                return res.status(400).json({
-                    ok: true,
-                    err
-                })
-                
-            }
-            if(result < 1){
-                return res.json({
-                    ok: false,
-                    mensaje: "El correo o la (contrasena) no es valido"
-                })
-            }
-
-            let getUsuarioDB = `SELECT email FROM usuarios WHERE password = AES_ENCRYPT(${req.body.password},'secret') and email = '${req.body.email}' `
-            db.query(getUsuarioDB, (err,result,fields) => {
-                if(err){
-                
-                    return res.status(400).json({
-                        ok: true,
-                        err
-                    })
-                }
-
-                if(result < 1){
-                    return res.json({
-                        ok: false,
-                        mensaje: "Ocurrio algo inserperado"
-                    })
-                }
-                let token = jwt.sign({
-                    usuario: result 
-                }, 'secret', {expiresIn: '1hr'})
+app.post('/login',[verificarCorreoLogin,verificarContrasenaLogin],async (req, res) => {
     
-                return res.json({
-                    ok: true,
-                    mensaje: result,
-                    token
-                })
-            })
-            
-        })
-        
-        
-    })
+    queries.getUsusarioLogin(req,res); 
+    
+
 })
 
 module.exports = app
