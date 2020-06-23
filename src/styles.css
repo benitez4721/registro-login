@@ -1,1 +1,102 @@
-/* You can add global styles to this file, and also import other style files */
+
+
+.container {
+    background: radial-gradient(circle at 60% 0%,#eb634e 2%, #d34e6f 10%,#8f346d,#203064,#15193c);
+    margin: 0;
+    height:100vh;
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.box {
+    width: 400px;
+    height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.input {
+    display: inline-flex;
+    border: solid  white;
+    border-left: none;
+    width: 15rem;
+    height: 3rem;
+    border-radius: 10px ;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+.input::placeholder{
+    padding-left: 15px;
+}
+
+.label {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    height: 3rem;
+    width: 3rem;
+    border: solid  white;
+    border-right: none;
+    border-top-left-radius:10px ;
+    border-bottom-left-radius:10px ;
+    /* padding-left: 2px;
+    padding-right: 2px; */
+    
+}
+
+.pos {
+    
+    display: flex;
+    margin-top: 10px;
+
+}
+
+i{
+    color: white;
+}
+
+.login-button{
+    margin-top: 20px;
+    color: white;
+    width: 18rem;
+    height: 3rem;
+    border: none;
+    border-radius: 10px ;
+    background-color: #fc5488;
+}
+
+.img{
+    width: 18rem;
+    height: 8rem;
+}
+
+.label-checkbox {
+    margin-left: 4px;
+    font-size: 15px;
+    color: white;   
+}
+
+.forgot{
+    float: right;
+    color: slategrey;
+    font-size: 15px;
+}
+
+
+
+.hr{
+    width: 18rem;
+    background-color: snow;
+}
+
+/* .label-item{
+    margin-top: 10px;
+    
+} */
+
+
